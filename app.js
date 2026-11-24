@@ -46,7 +46,7 @@ function route() {
   const v = all.find(x => x.id === id);
   if (!v) { closePlayer(); return; }
   current = v; resetAB();
-  video.src = enc(v.file);
+  video.src = /^https?:/.test(v.file) ? encodeURI(v.file) : enc(v.file);
   $('#p-title').textContent = v.title;
   $('#p-meta').textContent = [v.artist, fmt(v.duration), (v.tags || []).map(t => '#' + t).join(' ')].filter(Boolean).join(' · ');
   document.title = v.title + ' · 창팝 아카이브';

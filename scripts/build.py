@@ -33,6 +33,9 @@ def main():
     meta_path = ROOT / "meta.json"
     meta = json.loads(meta_path.read_text("utf-8")) if meta_path.exists() else {}
     THUMBS.mkdir(exist_ok=True)
+    cfg_path = ROOT / "config.json"
+    cfg = json.loads(cfg_path.read_text("utf-8")) if cfg_path.exists() else {}
+    base = cfg.get("mediaBase", "").rstrip("/")  # 예: https://videos.example.com
     items = []
     for p in sorted(VIDEOS.rglob("*")):
         if p.suffix.lower() not in EXTS or p.name.startswith("."):
@@ -47,7 +50,7 @@ def main():
             print(f"! {key}: 브라우저에서 재생이 안 될 수 있음 (mp4/H.264 로 변환 권장)")
         items.append({
             "id": p.stem if p.stem.isascii() else key.replace("/", "-").rsplit(".", 1)[0],
-            "file": rel,
+            "file": f"{base}/{key}" if base else rel,
             "title": m.get("title") or p.stem.replace("_", " "),
             "artist": m.get("artist", ""),
             "tags": m.get("tags", []) + ([p.parent.name] if p.parent != VIDEOS else []),
